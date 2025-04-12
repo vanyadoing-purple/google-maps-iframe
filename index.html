@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Locator Widget</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      /* Ensure the widget takes up the full viewport */
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      /* Default styles applied directly to the locator element */
+      gmpx-store-locator {
+        width: 100%;
+        height: 100%;
+        /* These CSS custom properties can be overridden dynamically via JavaScript */
+        --gmpx-color-surface: #fff;
+        --gmpx-color-on-surface: #212121;
+        --gmpx-color-on-surface-variant: #757575;
+        --gmpx-color-primary: #1967d2;
+        --gmpx-color-outline: #e0e0e0;
+        --gmpx-fixed-panel-width-row-layout: 28.5em;
+        --gmpx-fixed-panel-height-column-layout: 65%;
+        --gmpx-font-family-base: "Roboto", sans-serif;
+        --gmpx-font-family-headings: "Roboto", sans-serif;
+        --gmpx-font-size-base: 0.875rem;
+        --gmpx-hours-color-open: #188038;
+        --gmpx-hours-color-closed: #d50000;
+        --gmpx-rating-color: #ffb300;
+        --gmpx-rating-color-empty: #e0e0e0;
+      }
+    </style>
+    <!-- Load the Extended Component Library (as a module) -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js"></script>
+    <gmpx-api-loader key="AIzaSyA8pFO55V-SABglx136JrSXRGPCCE4TFqU" solution-channel="GMP_QB_locatorplus_v11_cABCDE"></gmpx-api-loader>
+  </head>
+  <body>
+    <!-- A container where the locator will be inserted dynamically -->
+    <div id="locator-container" style="width: 100%; height: 100%;"></div>
+
+    <script>
+      // Our default configuration
+      const defaultConfig = {
+        "locations": [
+          {
+            "title": "Yosemite National Park",
+            "address1": "California",
+            "address2": "USA",
+            "coords": { "lat": 37.86524226614596, "lng": -119.53833476441802 },
+            "placeId": "ChIJxeyK9Z3wloAR_gOA7SycJC0"
+          },
+          {
+            "title": "Badlands National Park",
+            "address1": "South Dakota",
+            "address2": "USA",
+            "coords": { "lat": 43.85539329426585, "lng": -102.33967510674593 },
+            "placeId": "ChIJIyAFGAyHfocR8Hfm2jFeaGk"
+          }
+        ],
+        "mapOptions": {
+          "center": { "lat": 38.0, "lng": -100.0 },
+          "fullscreenControl": true,
+          "mapTypeControl": false,
+          "streetViewControl": false,
+          "zoom": 4,
+          "zoomControl": true,
+          "maxZoom": 17,
+          // Do not provide a mapId if you plan to use dynamic styling.
+          //"mapId": "2dc667bface67f66", 
+          "styles": [
+            { "featureType": "all", "stylers": [{ "saturation": -50 }, { "lightness": 10 }] },
+            { "featureType": "road", "stylers": [{ "visibility": "simplified" }] },
+            { "featureType": "water", "stylers": [{ "color": "#aadaff" }] }
+          ]
+        },
+        "mapsApiKey": "AIzaSyA8pFO55V-SABglx136JrSXRGPCCE4TFqU",
+        "capabilities": {
+          "input": false,
+          "autocomplete": false,
+          "directions": false,
+          "distanceMatrix": false,
+          "details": false,
+          "actions": false
+        },
+        // Add a new property to hold CSS custom property overrides.
+        "styleVars": {
+          "--gmpx-color-surface": "#ffffe0",  // For example, light yellow background
+          "--gmpx-color-on-surface": "#333333",
+          "--gmpx-color-primary": "#ff5722",
+          "--gmpx-font-size-base": "1rem"
+          // ... any additional custom CSS variables
+        }
+      };
+
+      // Function to update CSS custom properties on the locator element.
+      function applyStyleVars(locator, styleVars) {
+        if (styleVars && typeof styleVars === "object") {
+          for (const [prop, value] of Object.entries(styleVars)) {
+            locator.style.setProperty(prop, value);
+          }
+        }
+      }
+
+      // Function to configure the locator based on a given configuration.
+      function configureLocator(config) {
+        // Merge default config with any additional parameters provided.
+        const combinedConfig = { ...defaultConfig, ...config.params };
+        
+        // Create the <gmpx-store-locator> element dynamically.
+        const locator = document.createElement('gmpx-store-locator');
+        // Optionally, set feature-set attribute (use "intermediate" or "basic" if dynamic styling is required).
+        locator.setAttribute('feature-set', combinedConfig.capabilities.input ? "intermediate" : "basic");
+        // If you want to set a Map ID for advanced styling, you would do it here—but for dynamic styling, omit it.
+        // For dynamic styles, you should remove or not set 'map-id'.
+        // locator.setAttribute('map-id', combinedConfig.mapOptions.mapId);
+
+        // Insert the locator into your container.
+        const container = document.getElementById('locator-container');
+        container.innerHTML = ""; // Clear container if needed.
+        container.appendChild(locator);
+
+        // Apply dynamic CSS custom properties.
+        if (combinedConfig.styleVars) {
+          applyStyleVars(locator, combinedConfig.styleVars);
+        }
+
+        // Once the custom element is defined, configure it.
+        customElements.whenDefined('gmpx-store-locator').then(() => {
+          locator.configureFromQuickBuilder(combinedConfig);
+          console.log('Locator configured:', locator);
+        });
+      }
+
+      // Do not configure the locator on DOMContentLoaded.
+      // Instead, wait for a window message to trigger configuration.
+      window.addEventListener('message', event => {
+        if (event.data && typeof event.data === 'object') {
+          console.log('Received configuration via postMessage:', event.data);
+          configureLocator(event.data);
+        }
+      });
+    </script>
+  </body>
+</html>
