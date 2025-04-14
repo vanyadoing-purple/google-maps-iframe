@@ -110,7 +110,7 @@
         // Create the <gmpx-store-locator> element dynamically.
         const locator = document.createElement('gmpx-store-locator');
         // Optionally, set feature-set attribute (use "intermediate" or "basic" if dynamic styling is required).
-        locator.setAttribute('feature-set', combinedConfig.capabilities.input ? "intermediate" : "basic");
+        //locator.setAttribute('feature-set', combinedConfig.capabilities.input ? "intermediate" : "basic");
         // If you want to set a Map ID for advanced styling, you would do it here—but for dynamic styling, omit it.
         // For dynamic styles, you should remove or not set 'map-id'.
         // locator.setAttribute('map-id', combinedConfig.mapOptions.mapId);
@@ -121,14 +121,14 @@
         container.appendChild(locator);
 
         // Apply dynamic CSS custom properties.
-        if (combinedConfig.styleVars) {
-          applyStyleVars(locator, combinedConfig.styleVars);
+        if (config.styleVars) {
+          applyStyleVars(locator, config.styleVars);
         }
 
         // Once the custom element is defined, configure it.
         customElements.whenDefined('gmpx-store-locator').then(() => {
           locator.configureFromQuickBuilder(combinedConfig);
-          console.log('Locator configured:', locator);
+          //console.log('Locator configured:', locator);
         });
       }
 
@@ -136,7 +136,7 @@
       // Instead, wait for a window message to trigger configuration.
       window.addEventListener('message', event => {
         if (event.data && typeof event.data === 'object') {
-          console.log('Received configuration via postMessage:', event.data);
+          //console.log('Received configuration via postMessage:', event.data);
           configureLocator(event.data);
         }
       });
