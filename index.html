@@ -113,7 +113,7 @@
         //locator.setAttribute('feature-set', combinedConfig.capabilities.input ? "intermediate" : "basic");
         // If you want to set a Map ID for advanced styling, you would do it here—but for dynamic styling, omit it.
         // For dynamic styles, you should remove or not set 'map-id'.
-        // locator.setAttribute('map-id', combinedConfig.mapOptions.mapId);
+        locator.setAttribute('map-id', combinedConfig.mapOptions.mapId);
 
         // Insert the locator into your container.
         const container = document.getElementById('locator-container');
