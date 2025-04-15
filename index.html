@@ -66,8 +66,7 @@
           "zoom": 4,
           "zoomControl": true,
           "maxZoom": 17,
-          // Do not provide a mapId if you plan to use dynamic styling.
-          //"mapId": "2dc667bface67f66", 
+          "mapId": "12", 
           "styles": [
             { "featureType": "all", "stylers": [{ "saturation": -50 }, { "lightness": 10 }] },
             { "featureType": "road", "stylers": [{ "visibility": "simplified" }] },
@@ -83,11 +82,7 @@
           "details": false,
           "actions": false
         },
-        // Add a new property to hold CSS custom property overrides.
         "styleVars": {
-          "--gmpx-color-surface": "#ffffe0",  // For example, light yellow background
-          "--gmpx-color-on-surface": "#333333",
-          "--gmpx-color-primary": "#ff5722",
           "--gmpx-font-size-base": "1rem"
           // ... any additional custom CSS variables
         }
@@ -109,15 +104,11 @@
         
         // Create the <gmpx-store-locator> element dynamically.
         const locator = document.createElement('gmpx-store-locator');
-        // Optionally, set feature-set attribute (use "intermediate" or "basic" if dynamic styling is required).
-        //locator.setAttribute('feature-set', combinedConfig.capabilities.input ? "intermediate" : "basic");
-        // If you want to set a Map ID for advanced styling, you would do it here—but for dynamic styling, omit it.
-        // For dynamic styles, you should remove or not set 'map-id'.
         locator.setAttribute('map-id', combinedConfig.mapOptions.mapId);
 
         // Insert the locator into your container.
         const container = document.getElementById('locator-container');
-        container.innerHTML = ""; // Clear container if needed.
+        container.innerHTML = "";
         container.appendChild(locator);
 
         // Apply dynamic CSS custom properties.
@@ -127,16 +118,16 @@
 
         // Once the custom element is defined, configure it.
         customElements.whenDefined('gmpx-store-locator').then(() => {
+          console.log('combinedConfig:',combinedConfig);
           locator.configureFromQuickBuilder(combinedConfig);
           //console.log('Locator configured:', locator);
         });
       }
 
-      // Do not configure the locator on DOMContentLoaded.
       // Instead, wait for a window message to trigger configuration.
       window.addEventListener('message', event => {
         if (event.data && typeof event.data === 'object') {
-          //console.log('Received configuration via postMessage:', event.data);
+          console.log('Received configuration via postMessage:', event.data);
           configureLocator(event.data);
         }
       });
