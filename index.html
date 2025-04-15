@@ -118,7 +118,7 @@
 
         // Once the custom element is defined, configure it.
         customElements.whenDefined('gmpx-store-locator').then(() => {
-          console.log('combinedConfig:',combinedConfig);
+          //console.log('combinedConfig:',combinedConfig);
           locator.configureFromQuickBuilder(combinedConfig);
           //console.log('Locator configured:', locator);
         });
@@ -127,7 +127,7 @@
       // Instead, wait for a window message to trigger configuration.
       window.addEventListener('message', event => {
         if (event.data && typeof event.data === 'object') {
-          console.log('Received configuration via postMessage:', event.data);
+          //console.log('Received configuration via postMessage:', event.data);
           configureLocator(event.data);
         }
       });
